@@ -1,0 +1,83 @@
+<html>
+<head>
+<script src="jquery-2.1.0.min.js"></script>
+<script src="/assets/gmap3.js?body=1" type="text/javascript"></script>
+<script src="https://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>
+</head>
+<body>
+
+
+
+
+<div style="margin-bottom: 10px;"> 
+
+
+<input type="text" name="address" id="address" style="width:300px;"> 
+
+
+<button id="useAddr" onClick="marcarDireccion()" style="margin-left:15px">Situar Dirección</button>
+ </div>
+
+ <div style="height: 300px; width: 600px;" id="map"></div>
+
+ <span id="err" style="color:red"></span>
+ <p style="text-align: justify; color: #888; font-size: small;">  Latitud: <input type="text" name="lat" id="lat" style="width:150px;"> </p> <p style="text-align: justify; color: #888; font-size: small;">  Longitud: <input type="text" name="long" id="long" style="width:150px;"> </p>
+	<form action="" method="POST">
+	<button id="calcula" type="submit">Obtener datos</button>
+	
+	</form>
+ <script type="text/javascript"> 
+ var map; var geocoder; 
+ var errMSG; 
+ var fldAddr; 
+ var fldLng;
+ var fldLat; 
+ var mapCntr; 
+ var geocoder; 
+ 
+ function initialize() { 
+ 
+ mapDIV = document.getElementById("map"); 
+ 
+ fldAddr = document.getElementById("address");
+ errMSG = document.getElementById("err"); 
+ fldLng = document.getElementById("long");
+ fldLat = document.getElementById("lat"); 
+ geocoder = new google.maps.Geocoder();
+ var latlng = new google.maps.LatLng(37.443330303736026, -122.16418147087097);
+ var myOptions = { zoom: 10, center: latlng, mapTypeId: google.maps.MapTypeId.ROADMAP };
+ mapDIV.innerHTML = ""; map = new google.maps.Map(mapDIV, myOptions); }
+ function marcarDireccion() { fldAddr.value = fldAddr.value.trim(); 
+ 
+ 
+ if (fldAddr.value) { fldLat.value = ""; fldLng.value = ""; geocoder.geocode({'address': fldAddr.value}, function(results, status) { if (status == google.maps.GeocoderStatus.OK) { errMSG.innerHTML = ""; map.setCenter(results[0].geometry.location); fldLat.value = results[0].geometry.location.lat(); fldLng.value = results[0].geometry.location.lng(); var txt = fldAddr.value = results[0].formatted_address; 
+ if (txt) { var calleCiudad = txt.split(',', 2); txt = calleCiudad[0].trim() + "\n" + calleCiudad[1].trim() + "\n"; } txt += "lat: " + fldLat.value + "\nlng: " + fldLng.value + "\n"; new google.maps.Marker({ position: new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng()), map: map }); map.setZoom(15); } else { errMSG.innerHTML = "Error " + status; } }); } } google.maps.event.addDomListener(window, 'load', initialize); </script> 
+ 
+
+ <script>
+ $('#calcula').click(function(){
+ 
+	$.ajax({
+            type: "POST",
+           url: '<?=base_url()?>index.php/simula/update',
+           data: dataString,
+            success: function() {
+	
+				
+                 $('#info').fadeIn(10000).html("xd");
+				
+				
+			
+				
+            }
+      });
+	
+
+ 
+ });
+ 
+
+ </script>
+ <body>
+ 
+ </html>
